@@ -550,15 +550,7 @@
   // --- LEADERBOARD & SPEEDRUN MANAGER ---
   const LEADERBOARD_KEY = 'mrdood_hunt_leaderboard';
 
-  const DEFAULT_LEADERBOARD = [
-    { id: 'lb-1', name: 'Kavindu P.', timeMs: 142000, letters: 7, ticket: 'MD-8F2A-91K2', date: 'AccroNex Champion', claimed: true },
-    { id: 'lb-2', name: 'Tharushi M.', timeMs: 178000, letters: 7, ticket: 'MD-3C91-44B8', date: 'AccroNex Champion', claimed: true },
-    { id: 'lb-3', name: 'Sulaxshan L.', timeMs: 209000, letters: 7, ticket: 'MD-7D15-38E2', date: 'AccroNex Champion', claimed: true },
-    { id: 'lb-4', name: 'Naveen K.', timeMs: 245000, letters: 7, ticket: 'MD-2B88-11L9', date: 'AccroNex Champion', claimed: true },
-    { id: 'lb-5', name: 'Dinuka S.', timeMs: 284000, letters: 7, ticket: 'MD-6E44-90T1', date: 'AccroNex Champion', claimed: false },
-    { id: 'lb-6', name: 'Aathavan R.', timeMs: 319000, letters: 7, ticket: 'MD-5F72-23P4', date: 'AccroNex Champion', claimed: false },
-    { id: 'lb-7', name: 'Senuri W.', timeMs: 362000, letters: 7, ticket: 'MD-9A10-55R7', date: 'AccroNex Champion', claimed: false }
-  ];
+  const DEFAULT_LEADERBOARD = [];
 
   class LeaderboardManager {
     constructor() {
