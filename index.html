@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>Mr. Dood – QR Letter Hunt Adventure</title>
+  <meta name="description" content="Find 7 hidden QR codes across the venue, unlock the letters of MR.DOOD, and win exciting prizes!">
+  <meta name="theme-color" content="#101827">
+  <meta name="apple-mobile-web-app-capable" content="yes">
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+  
+  <!-- Favicon / Logo -->
+  <link rel="icon" type="image/png" href="assets/logo.png">
+  <link rel="apple-touch-icon" href="assets/logo.png">
+
+  <!-- Core Styles -->
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Celebration Confetti Layer -->
+  <canvas id="confetti-canvas"></canvas>
+
+  <!-- Hidden photo upload fallback for QR scanner -->
+  <input type="file" id="scanner-file-input" accept="image/*" style="display:none;">
+
+  <!-- Main Mobile App Frame -->
+  <div class="app-container" id="app-root">
+    
+    <!-- Top Global App Bar -->
+    <header class="top-bar">
+      <div class="brand-badge" id="brand-badge-link" title="Mr. Dood Letter Hunt">
+        <img src="assets/logo.png" alt="Mr. Dood">
+        <div class="brand-title">MR.<span>DOOD</span></div>
+      </div>
+
+      <div class="top-actions">
+        <!-- Leaderboard Trigger -->
+        <button id="leaderboard-toggle-btn" class="icon-btn" title="Explorer Leaderboard" aria-label="Open Leaderboard">
+          🏆
+        </button>
+        <!-- Sound FX Toggle -->
+        <button id="sound-toggle-btn" class="icon-btn" title="Toggle Sound FX" aria-label="Toggle Sound Effects">
+          🔊
+        </button>
+        <!-- Organizer / QR Test Hub -->
+        <button id="organizer-toggle-btn" class="icon-btn" title="Organizer & Test Hub" aria-label="Organizer QR Code Hub">
+          ⚙️
+        </button>
+      </div>
+    </header>
+
+    <!-- Dynamic Screen Content (Welcome, Dashboard, Victory) -->
+    <main id="app-view">
+      <!-- Injected dynamically by app.js -->
+    </main>
+
+  </div>
+
+  <!-- =======================================================================
+       FULL-SCREEN CAMERA QR SCANNER OVERLAY
+       ======================================================================= -->
+  <div class="scanner-overlay" id="scanner-overlay">
+    <div class="scanner-header">
+      <div class="scanner-title-box">
+        <h2>FIND YOUR NEXT LETTER</h2>
+        <p>Point your camera at a Mr. Dood QR code</p>
+      </div>
+      <button class="scanner-close-btn" id="scanner-close-btn" aria-label="Close Scanner">✕</button>
+    </div>
+
+    <!-- Scanner Camera Viewport Frame -->
+    <div class="scanner-view-box">
+      <video id="camera-video" playsinline></video>
+      <canvas id="camera-canvas"></canvas>
+      
+      <!-- Animated Corner Brackets -->
+      <div class="scan-corner corner-tl"></div>
+      <div class="scan-corner corner-tr"></div>
+      <div class="scan-corner corner-bl"></div>
+      <div class="scan-corner corner-br"></div>
+      
+      <!-- Moving Laser Scan Line -->
+      <div class="scan-laser"></div>
+    </div>
+
+    <!-- Scanner Bottom Toolbar -->
+    <div class="scanner-controls">
+      <button class="scanner-tool-btn" id="scanner-flip-btn">
+        🔄 Flip Camera
+      </button>
+      <button class="scanner-tool-btn" id="scanner-torch-btn">
+        💡 Flashlight
+      </button>
+      <button class="scanner-tool-btn" id="scanner-upload-btn">
+        📁 Photo
+      </button>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       LETTER DISCOVERY POPUP (THE HERO ANIMATION)
+       ======================================================================= -->
+  <div class="modal-overlay" id="discovery-modal">
+    <div class="discovery-card">
+      <div class="discovery-badge" id="discovery-special-badge" style="display:none;">
+        🌟 NEW CHARACTER UNLOCKED!
+      </div>
+      
+      <h2 class="discovery-heading">YOU FOUND A LETTER!</h2>
+
+      <!-- 3D Glowing Token Box -->
+      <div class="token-stage">
+        <div class="token-halo"></div>
+        <div class="token-3d">
+          <span class="token-letter" id="discovery-letter-display">M</span>
+          <span class="token-sparkle">✨</span>
+        </div>
+      </div>
+
+      <div class="discovery-pos-info" id="discovery-pos-info">Position 1 of 7 in MR.DOOD</div>
+      <p class="discovery-sub" id="discovery-sub-text">One step closer to MR.DOOD!</p>
+
+      <button id="discovery-collect-btn" class="btn-primary">
+        <span>COLLECT LETTER</span> 🎁
+      </button>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       WARNING / DUPLICATE TOAST MODAL
+       ======================================================================= -->
+  <div class="modal-overlay" id="warning-modal">
+    <div class="warning-card">
+      <div class="warning-icon">⚠️</div>
+      <h3 class="warning-title" id="warning-title">ALREADY COLLECTED!</h3>
+      <p class="warning-msg" id="warning-msg">
+        You've already collected this character. Keep hunting for the other letters around the venue!
+      </p>
+      <button id="warning-close-btn" class="btn-primary btn-orange">
+        <span>KEEP SEARCHING</span> 🏃
+      </button>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       OFFICIAL PRIZE PRESENTATION MODE (CERTIFICATE / PASS)
+       ======================================================================= -->
+  <div class="reward-pass-overlay" id="reward-pass-overlay">
+    <div class="reward-pass-card">
+      <!-- Rotating Security Seal -->
+      <div class="security-ring">
+        <div class="security-inner">✓</div>
+      </div>
+
+      <div class="pass-org-name">MR. DOOD OFFICIAL PROMOTION</div>
+      <h2 class="pass-title">CHAMPION VICTORY PASS</h2>
+
+      <!-- Player Name Callout -->
+      <div class="pass-player-box">
+        <div class="pass-player-label">VERIFIED EXPLORER</div>
+        <div class="pass-player-name" id="pass-player-name-val">CHAMPION</div>
+      </div>
+
+      <!-- Verified 7/7 Character Badge -->
+      <div style="margin: 10px 0 14px; font-weight: 800; font-size: 1.1rem; color: #15803d; letter-spacing: 2px;">
+        M · R · . · D · O · O · D
+      </div>
+
+      <!-- Ticket Code -->
+      <div class="pass-ticket-code" id="pass-ticket-val">MD-XXXX-XXXX</div>
+
+      <!-- Live Anti-Tamper Clock -->
+      <div class="pass-timestamp-live" id="pass-live-time-val">
+        ● LIVE VERIFICATION: 12:00:00 PM
+      </div>
+
+      <p style="font-size: 0.85rem; color: #475569; margin-bottom: 20px; line-height: 1.4;">
+        Present this screen directly to the Mr. Dood event booth staff to claim your official reward!
+      </p>
+
+      <button id="reward-pass-close-btn" class="btn-secondary">
+        <span>Close Verification Screen</span>
+      </button>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       LEADERBOARD & SPEEDRUN MODAL
+       ======================================================================= -->
+  <div class="leaderboard-modal" id="leaderboard-modal">
+    <div class="leaderboard-dialog">
+      <div class="leaderboard-header">
+        <div class="leaderboard-title-group">
+          <h2>🏆 EXPLORER LEADERBOARD</h2>
+          <p>Top MR.DOOD Speedrun Champions • AccroNex 2026</p>
+        </div>
+        <button class="scanner-close-btn" id="leaderboard-close-btn" style="color:#fff; background:rgba(255,255,255,0.15);">✕</button>
+      </div>
+
+      <!-- Top 3 Podium Area -->
+      <div class="podium-stage" id="podium-stage-area">
+        <!-- Injected dynamically by app.js -->
+      </div>
+
+      <!-- Scrollable Rankings List -->
+      <div class="leaderboard-body" id="leaderboard-list-area">
+        <!-- Injected dynamically by app.js -->
+      </div>
+
+      <!-- Current Player Fixed Bottom Bar -->
+      <div class="leaderboard-footer-user" id="leaderboard-footer-user">
+        <!-- Injected dynamically by app.js -->
+      </div>
+    </div>
+  </div>
+
+  <!-- =======================================================================
+       EVENT ORGANIZER & TEST HUB DRAWER
+       ======================================================================= -->
+  <div class="organizer-drawer" id="organizer-drawer">
+    <div class="drawer-content">
+      <div class="drawer-header">
+        <div>
+          <h3>Event Organizer & QR Hub</h3>
+          <p style="font-size:0.78rem; color:#64748b;">Instant Testing & Scannable QR Codes</p>
+        </div>
+        <button class="scanner-close-btn" id="drawer-close-btn" style="color:#101827; background:#e2e8f0;">✕</button>
+      </div>
+
+      <div style="background:#f8fafc; border-radius:12px; padding:12px; margin-bottom:14px; border:1px solid #e2e8f0;">
+        <b style="font-size:0.85rem; color:#101827;">⚡ Quick Simulate Scan (One-Click Test)</b>
+        <p style="font-size:0.75rem; color:#64748b; margin-top:2px;">
+          Tap any button to test that letter unlock immediately without scanning a physical QR:
+        </p>
+        <div class="quick-test-grid" id="quick-test-btn-grid"></div>
+      </div>
+
+      <div style="margin-bottom:14px;">
+        <a href="qr-sheet.html" target="_blank" class="btn-secondary" style="text-decoration:none; text-align:center;">
+          📄 Open Printable Event QR Sheet
+        </a>
+      </div>
+
+      <b style="font-size:0.85rem; color:#101827;">📱 Scannable QR Codes (For 2nd Phone Testing)</b>
+      <p style="font-size:0.75rem; color:#64748b; margin-top:2px;">
+        Scan these directly with your mobile phone camera to test:
+      </p>
+      <div class="qr-code-display-area" id="qr-code-list-area"></div>
+
+      <div style="margin-top:20px; padding-top:14px; border-top:1px dashed #cbd5e1; display:flex; flex-direction:column; gap:8px;">
+        <button id="drawer-view-lb-btn" class="btn-secondary" style="color:var(--navy); border-color:#94a3b8;">
+          🏆 View Explorer Leaderboard
+        </button>
+        <button id="drawer-reset-progress-btn" class="btn-secondary" style="color:#b91c1c; border-color:#fca5a5; background:#fef2f2;">
+          🗑️ Reset Current Game Progress
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Offline Local QR Scanner & Generator Engines -->
+  <script src="assets/jsQR.min.js"></script>
+  <script src="assets/qrcode.min.js"></script>
+
+  <!-- Main Game Engine -->
+  <script src="app.js"></script>
+</body>
+</html>
