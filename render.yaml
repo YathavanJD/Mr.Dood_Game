@@ -1,6 +1,0 @@
-services:
-  - type: web
-    name: mrdood-qr
-    runtime: static
-    buildCommand: echo "no build"
-    staticPublishPath: .
