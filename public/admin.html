@@ -1,0 +1,52 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Mr.DooD Admin</title>
+<link rel="stylesheet" href="/assets/admin.css">
+</head><body>
+<div id="login" class="wrap hidden">
+  <div class="panel narrow">
+    <h1>Mr.DooD Admin</h1>
+    <p class="muted">Host login</p>
+    <input id="pw" type="password" placeholder="Admin password" autocomplete="current-password">
+    <div id="lerr" class="err"></div>
+    <button id="lbtn">Log in</button>
+  </div>
+</div>
+
+<div id="dash" class="hidden">
+  <header>
+    <div><b>Mr.DooD Admin</b> <span id="dot" class="dot off" title="live connection"></span><span id="conn" class="muted"> connecting</span></div>
+    <div class="tools">
+      <button id="bAlert" class="sm">🔔 Phone/desktop alerts</button>
+      <button id="bSound" class="sm">🔊 Sound on</button>
+      <button id="bGame" class="sm">Pause hunt</button>
+      <button id="bOut" class="sm ghost">Log out</button>
+    </div>
+  </header>
+  <div id="toasts"></div>
+  <div class="wrap">
+    <div class="stats" id="stats"></div>
+
+    <section class="panel"><h2>Live notifications</h2>
+      <div id="push" class="muted small"></div>
+      <ul id="feed" class="feed"></ul></section>
+
+    <section class="panel"><h2>QR codes</h2><div class="scroll"><table id="qrs"></table></div></section>
+    <section class="panel"><h2>Winners</h2><div class="scroll"><table id="wins"></table></div></section>
+    <section class="panel"><h2>Players</h2><div class="scroll"><table id="players"></table></div></section>
+
+    <section class="panel"><h2>Secret QR links</h2>
+      <p class="muted small">These are the exact links inside the printed QR cards. Never share them with players.</p>
+      <button id="bLinks" class="sm">Show links</button><div id="links"></div></section>
+
+    <section class="panel danger"><h2>Danger zone</h2>
+      <p class="muted small">Clears every player, scan and winner. The printed QR codes keep working.</p>
+      <input id="rconf" placeholder='Type RESET to confirm'>
+      <button id="bReset" class="sm red">Reset the whole game</button>
+      <div id="rerr" class="err"></div></section>
+  </div>
+</div>
+<script src="/assets/admin.js"></script>
+</body></html>

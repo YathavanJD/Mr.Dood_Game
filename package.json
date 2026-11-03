@@ -1,0 +1,9 @@
+{
+  "name": "mr-dood-hunt",
+  "version": "1.0.0",
+  "private": true,
+  "description": "Mr.DooD QR scan hunt - secure game server",
+  "main": "server.js",
+  "scripts": { "start": "node server.js" },
+  "engines": { "node": ">=18" }
+}
